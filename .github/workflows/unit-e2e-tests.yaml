@@ -91,3 +91,14 @@ jobs:
       - name: Fail if E2E tests fail
         if: failure()
         run: exit 1
+
+      - name: Report status to PR
+        if: success()
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+            -X POST \
+            -F state=success \
+            -F context="Unit and E2E Tests" \
+            -F description="All tests passed successfully"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
