@@ -23,3 +23,14 @@ jobs:
 
       - name: Build project
         run: npm run build
+
+      - name: Report status to PR
+        if: success()
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=success \
+          -F context="Build Project" \
+          -F description="Build completed successfully"
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
