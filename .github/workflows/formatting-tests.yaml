@@ -1,14 +1,11 @@
 name: Basic Tests
 
-on:
-  push:
-    branches-ignore:
-      - develop
-  pull_request:
+on: [push]
 
 jobs:
   formatting_tests:
     name: Formatting Tests
+    if: github.ref_name != 'develop'
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +21,9 @@ jobs:
         run: npm install
 
       - name: Test Prettier
-        run: npx prettier --check --config .prettierrc --log-level warn .
+        run: |
+          npx prettier --check --config .prettierrc --log-level warn .
 
       - name: Test ESLint
-        run: npx eslint --color --max-warnings 0 .
-
-    outputs:
-      test_status: ${{ job.status }}
+        run: |
+          npx eslint --color --max-warnings 0 .
