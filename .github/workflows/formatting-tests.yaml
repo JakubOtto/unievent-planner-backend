@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '21'
 
-      - name: Install dependenciess
+      - name: Install dependencies
         run: npm install
 
       - name: Test Prettier
