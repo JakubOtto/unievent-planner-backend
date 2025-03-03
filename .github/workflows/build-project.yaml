@@ -17,7 +17,7 @@ jobs:
   build_project:
     name: Build Production Servers
     runs-on: ubuntu-latest
-    needs: wait_for_tests  
+    needs: wait_for_tests
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
