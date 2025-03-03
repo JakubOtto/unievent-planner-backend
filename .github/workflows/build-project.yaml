@@ -1,19 +1,28 @@
-name: Build project
+name: Build Project
 
 on:
   workflow_run:
     workflows: ['Basic Tests']
     types: [completed]
+
 jobs:
-  build-project:
+  wait_for_tests:
+    name: Wait for Basic Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Basic Tests Status
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: exit 1
+
+  build_project:
     name: Build Production Servers
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: wait_for_tests
     steps:
-      - name: Checkout codes
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.jss
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 21
