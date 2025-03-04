@@ -141,7 +141,7 @@ jobs:
   report-skipped:
     name: Report Skipped Status
     runs-on: ubuntu-latest
-    if: ${{ needs.report-skipped-for-build-project.result == 'failure' }}
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - name: Report skipped to PR
         run: |
