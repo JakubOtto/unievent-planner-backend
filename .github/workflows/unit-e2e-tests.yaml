@@ -139,9 +139,9 @@ jobs:
 
         
   report-skipped:
-    name: Report Skipped Statuss
+    name: Report Skipped Status
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    if: ${{ needs.build-project.result == 'failure' }}
     steps:
       - name: Report skipped to PR
         run: |
@@ -149,7 +149,7 @@ jobs:
           -X POST \
           -F state=error \
           -F context="Unit Tests" \
-          -F description="Unit Tests skipped"
+          -F description="Build Project skipped due to failure in Basic Tests"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
