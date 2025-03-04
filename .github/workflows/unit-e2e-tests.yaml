@@ -47,6 +47,28 @@ jobs:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         run: npm run test -- --passWithNoTests
 
+      - name: Report status to PR
+        if: success()
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+            -X POST \
+            -F state=success \
+            -F context="Unit Tests" \
+            -F description="Unit Tests passed successfully"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Report failure to PR
+        if: failure()
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=failure \
+          -F context="Unit Tests" \
+          -F description="Unit Tests failed"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   e2e_tests:
     name: E2E Tests
     runs-on: ubuntu-latest
@@ -98,7 +120,35 @@ jobs:
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
             -X POST \
             -F state=success \
-            -F context="Unit and E2E Tests" \
-            -F description="All tests passed successfully"
+            -F context="E2E Tests" \
+            -F description="E2E tests passed successfully"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Report failure to PR
+        if: failure()
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=failure \
+          -F context="E2E Tests" \
+          -F description="E2E tests failed"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        
+  report-skipped:
+    name: Report Skipped Status
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' || needs.unit_tests.conclusion == 'failure' }}
+    steps:
+      - name: Report skipped to PR
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=error \
+          -F context="Build Project" \
+          -F description="Build Project skipped due to failure in Basic Tests"
+          exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
