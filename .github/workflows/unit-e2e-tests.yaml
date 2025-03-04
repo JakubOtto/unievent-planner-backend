@@ -150,11 +150,6 @@ jobs:
           -F state=error \
           -F context="Unit Tests" \
           -F description="Unit Tests skipped"
-          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
-          -X POST \
-          -F state=error \
-          -F context="E2E Tests" \
-          -F description="E2E Tests skipped"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
