@@ -150,6 +150,7 @@ jobs:
           -F state=error \
           -F context="Unit Tests" \
           -F description="Build Project skipped due to failure in Basic Tests"
+          exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
