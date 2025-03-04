@@ -41,13 +41,13 @@ jobs:
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
           -X POST \
           -F state=failure \
-          -F context="${{ github.job }}" \
+          -F context="Build Project" \
           -F description="${{ github.job }} failed"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Report skipped to PR
-        if: ${{ github.event.workflow_run.conclusion == 'skipped' }}
+        if: ${{ github.event.workflow_run.conclusion == 'Skipped' }}
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
           -X POST \
