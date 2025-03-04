@@ -45,3 +45,14 @@ jobs:
           -F description="${{ github.job }} failed"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Report skipped to PR
+        if: ${{ github.event.workflow_run.conclusion == 'skipped' }}
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=error \
+          -F context="Build Project" \
+          -F description="Build skipped due to previous failure"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
