@@ -91,6 +91,7 @@ jobs:
           --health-retries 3
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -138,17 +139,37 @@ jobs:
 
         
   report-skipped:
-    name: Report Skipped Status
+    name: Report Skipped Statuss
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' || needs.unit_tests.conclusion == 'failure' }}
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Report skipped to PR
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=failure \
+          -F context="Unit Tests \
+          -F description="Unit Tests skipped"
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=failure \
+           -F context="E2E Tests" \
+          -F description="E2E Tests skipped"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  report-skipped-for-e2e:
+    name: Report Skipped Statuss
+    runs-on: ubuntu-latest
+    if: ${{ needs.unit_tests.conclusion == 'failure'  }}
     steps:
       - name: Report skipped to PR
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
           -X POST \
           -F state=error \
-          -F context="Build Project" \
-          -F description="Build Project skipped due to failure in Basic Tests"
+          -F context="E2E Tests" \
+          -F description="E2E tests skipped due to Unit Tests failure"
           exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
