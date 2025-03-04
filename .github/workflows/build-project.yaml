@@ -43,11 +43,11 @@ jobs:
           -X POST \
           -F state=failure \
           -F context="Build Project" \
-          -F description="${{ github.job }} failed"
+          -F description="Build Project failed"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  report-skipped:
+  report-skipped-for-build-project:
     name: Report Skipped Status
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
