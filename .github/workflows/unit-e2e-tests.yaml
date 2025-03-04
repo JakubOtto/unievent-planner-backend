@@ -141,7 +141,7 @@ jobs:
   report-skipped:
     name: Report Skipped Status
     runs-on: ubuntu-latest
-    if: ${{ needs.build-project.result == 'failure' }}
+    if: ${{ needs.report-skipped-for-build-project.result == 'failure' }}
     steps:
       - name: Report skipped to PR
         run: |
