@@ -32,5 +32,16 @@ jobs:
           -F state=success \
           -F context="Build Project" \
           -F description="Build completed successfully"
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Report failure to PR
+        if: failure()
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=failure \
+          -F context="${{ github.job }}" \
+          -F description="${{ github.job }} failed"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
