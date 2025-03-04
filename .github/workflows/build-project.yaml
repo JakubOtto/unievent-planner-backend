@@ -8,8 +8,18 @@ jobs:
   build-project:
     name: Build Production Servers
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
+      - name: Report skipped if Basic Tests failed
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=error \
+          -F context="Build Project" \
+          -F description="Build Project skipped due to failure in Basic Tests"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Checkout codes
         uses: actions/checkout@v4
 
@@ -43,16 +53,5 @@ jobs:
           -F state=failure \
           -F context="Build Project" \
           -F description="${{ github.job }} failed"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Report skipped to PR
-        if: ${{ github.event.workflow_run.conclusion == 'Skipped' }}
-        run: |
-          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
-          -X POST \
-          -F state=error \
-          -F context="Build Project" \
-          -F description="Build skipped due to previous failure"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
