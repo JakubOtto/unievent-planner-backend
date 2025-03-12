@@ -56,7 +56,7 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
           -X POST \
-          -F state=error \
+          -F state=failure \
           -F context="Build Project" \
           -F description="Build Project skipped due to failure in Basic Tests"
           exit 1
