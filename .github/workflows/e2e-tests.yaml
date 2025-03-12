@@ -56,7 +56,7 @@ jobs:
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
             -X POST \
             -F state=success \
-            -F context="E2E Tests" \
+            -F context="E2E Tests raport" \
             -F description="E2E tests passed successfully"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
           -X POST \
           -F state=failure \
-          -F context="E2E Tests" \
+          -F context="E2E Tests raport" \
           -F description="E2E tests failed"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,7 +83,7 @@ jobs:
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
           -X POST \
           -F state=error \
-          -F context="E2E Tests" \
+          -F context="E2E Tests raport" \
           -F description="Build Project skipped due to failure in Basic Tests"
           exit 1
         env:
