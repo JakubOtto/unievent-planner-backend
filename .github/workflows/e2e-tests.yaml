@@ -82,11 +82,13 @@ jobs:
     steps:
       - name: Report skipped to PR
         run: |
-          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          gh api repos/${{ github.repository }}/check-runs \
           -X POST \
-          -F state=failure \
-          -F context="E2E Tests raport" \
-          -F description="E2E Tests skipped due to failure in Build Project"
-          exit 1
+          -F name="E2E Tests raport" \
+          -F head_sha="${{ github.event.workflow_run.head_sha }}" \
+          -F status="completed" \
+          -F conclusion="failure" \
+          -F output[title]="E2E Tests Skipped" \
+          -F output[summary]="E2E Tests were skipped due to failure in Build Project."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
