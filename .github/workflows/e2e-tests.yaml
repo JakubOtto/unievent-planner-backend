@@ -84,9 +84,9 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
           -X POST \
-          -F state=error \
+          -F state=failure \
           -F context="E2E Tests raport" \
-          -F description="Build Project skipped due to failure in Basic Tests"
+          -F description="E2E Tests skipped due to failure in Build Project"
           exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
