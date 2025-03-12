@@ -1,9 +1,11 @@
 name: E2E tests
 
 on:
-  workflow_run:
-    workflows: ['Build project']
-    types: [completed]
+  push:
+    branches:
+      - '*'
+    branches-ignore:
+      - develop
 
 jobs:
   e2e_tests:
