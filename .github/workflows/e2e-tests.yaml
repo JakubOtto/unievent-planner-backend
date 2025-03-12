@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
-      - name: Report skipped to PR
+      - name: Report check-run
         run: |
           gh api repos/${{ github.repository }}/check-runs \
           -X POST \
@@ -90,5 +90,15 @@ jobs:
           -F conclusion="failure" \
           -F output[title]="E2E Tests Skipped" \
           -F output[summary]="E2E Tests were skipped due to failure in Build Project."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Report status
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }} \
+          -X POST \
+          -F state=failure \
+          -F context="E2E Tests raport" \
+          -F description="E2E Tests skipped due to failure in Build Project"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
